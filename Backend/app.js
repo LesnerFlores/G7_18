@@ -1,31 +1,19 @@
-'use strict'
+const express = require('express');
+const clienteController = require('./controllers/cliente-controller.js');
 
-var express = require('express'),
-	favicon = require('serve-favicon'),
-	bodyParser = require('body-parser'),
-	morgan = require('morgan'),
-	restFul = require('express-method-override')('_method'),
-	routes = require('./routes/router'),
-    	cors = require('cors'),
-	faviconURL = `${__dirname}/public/img/node-favicon.png`,
-	publicDir = express.static(`${__dirname}/public`),
-	viewDir = `${__dirname}/views`,
-	port = (process.env.PORT || 5007),
-    	app = express()
+const app = express();
+const port = 5007; // Puerto asignado para el Grupo 7
 
-app
-	.set('views', viewDir)
-	.set('view engine', 'jade')
-	.set('port', port)
-	.use(cors())
-	.use( favicon(faviconURL) )
-	// parse application/json
-	.use( bodyParser.json() )
-	// parse application/x-www-form-urlencoded
-	.use( bodyParser.urlencoded({extended: false}) )
-	.use(restFul)
-	.use( morgan('dev') )
-	.use(publicDir)
-	.use(routes)
-	
-module.exports = app
+app.use(express.json());
+
+// Rutas para los servicios API REST
+
+app.get('/clientes', clienteController.getAllClientes);
+app.get('/clientes/:id', clienteController.getClienteById);
+app.post('/clientes', clienteController.insertCliente);
+app.put('/clientes/:id', clienteController.updateCliente);
+app.delete('/clientes/:id', clienteController.deleteCliente);
+
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
+});
